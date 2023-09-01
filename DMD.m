@@ -1,4 +1,4 @@
-function [Phi ,omega ,lambda ,b,Xdmd] = DMD(X1,X2,r,dt)
+
 % function [Phi,omega ,lambda ,b,Xdmd ] = DMD(X1,X2,r,dt)
 % Computes the Dynamic Mode Decomposition of X1, X2
 %
@@ -15,8 +15,17 @@ function [Phi ,omega ,lambda ,b,Xdmd] = DMD(X1,X2,r,dt)
 % lambda , the discrete -time DMD eigenvalues
 % b, a vector of magnitudes of modes Phi
 % Xdmd , the data matrix reconstructed by Phi, omega , b
+
+%% Inputs
+X = TrialJointAngles1(:,3:end)';
+X1 = X(:, 1:end-1);
+X2 = X(:, 2:end);
+r =38;
+dt = 1;
+
+
 %% DMD
-[U, S, V] = svd(X1, "econ ");
+[U, S, V] = svd(X1, 'econ');
 r = min(r, size(U,2));
 U_r = U(:, 1:r); % truncate to rank -r
 S_r = S(1:r, 1:r);
@@ -39,36 +48,3 @@ for iter = 1:mm1
 end
 Xdmd = Phi * time_dynamics ;
 
-% Perform DMD on data
-
-%% Create DMD data matrices
-X1 = X(:, 1:end -1);
-X2 = X(:, 2:end);
-%% SVD and rank -2 truncation
-r = 2; % rank truncation
-[U, S, V] = svd(X1, 'econ ');
-Ur = U(:, 1:r);
-Sr = S(1:r, 1:r);
-Vr = V(:, 1:r);
-%% Build Atilde and DMD Modes
-Atilde = Ur'*X2*Vr/Sr;
-[W, D] = eig(Atilde);
-Phi = X2*Vr/Sr*W; % DMD Modes
-%% DMD Spectra
-lambda = diag(D);
-omega = log(lambda)/dt;
-%% Compute DMD Solution
-x1 = X(:, 1);
-b = Phi\x1;
-time_dynamics = zeros(r,length(t));
-for iter = 1:length(t)
-    time_dynamics (:,iter) = (b.*exp(omega*t(iter)));
-end
-X_dmd = Phi*time_dynamics ;
-subplot(2,2,4);
-surfl(real(X_dmd'));
-shading interp; colormap(gray); view (-20,60);
-set(gca , 'YTick', numel(t)/4 * (0:4)),
-set(gca , 'Yticklabel ',{'0','\pi','2\pi','3\pi','4\pi'});
-set(gca , 'XTick', linspace(1,numel(xi),3)),
-set(gca , 'Xticklabel ',{'-10', '0', '10'});
