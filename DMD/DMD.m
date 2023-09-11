@@ -16,8 +16,8 @@
 % b, a vector of magnitudes of modes Phi
 % Xdmd , the data matrix reconstructed by Phi, omega , b
 
-file_path = 'C:\Users\hodan\Google Drive\UBC\Codes\fusion\Trial_Joint_Angles.csv'; % Replace with your actual file path
-
+%file_path = 'C:\Users\hodan\Google Drive\UBC\Codes\fusion\DMD\Trial_Joint_Angles.csv'; % Replace with your actual file path
+file_path = 'C:\Users\sibas\Google Drive Streaming\My Drive\UBC\Codes\fusion\DMD\Trial_Joint_Angles.csv'
 data_table = readtable(file_path);
 header = string(data_table.Properties.VariableNames);
 numeric_data = table2array(data_table);
